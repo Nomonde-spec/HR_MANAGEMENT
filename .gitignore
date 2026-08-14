@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Database
+dev.db
+dev.db-*
+*.sqlite
+*.sqlite3
+
+# Build outputs
+dist/
+build/
+.nuxt/
+.next/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Temporary files
+.cache/
+.temp/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Prisma
+.prisma/
+prisma/migrations/dev.db-*

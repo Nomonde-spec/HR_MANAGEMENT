@@ -1,0 +1,48 @@
+﻿import React, { useEffect, useState } from 'react';
+import useAuthStore from '../store/authStore';
+import { getApprovals, approveLeave } from '../api/api';
+
+export default function HRDashboard() {
+  const { accessToken } = useAuthStore();
+  const [approvals, setApprovals] = useState([]);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+	let mounted = true;
+	if (!accessToken) return;
+	getApprovals(accessToken).then(res => { if (mounted && res.success) setApprovals(res.data); }).catch(()=>{});
+	return () => { mounted = false; };
+  }, [accessToken]);
+
+  async function handleDecision(id, approve) {
+	try {
+	  const res = await approveLeave(accessToken, id, approve, approve ? 'Approved' : 'Rejected');
+	  if (res.success) {
+		setMessage('Updated');
+		setApprovals(prev => prev.filter(x => x.id !== id));
+	  } else setMessage(res.message || 'Failed');
+	} catch (err) { setMessage(err.message); }
+  }
+
+  return (
+	<div className="p-6">
+	  <h2 className="text-2xl font-bold">HR Dashboard</h2>
+	  <div className="mt-4">
+		<h3 className="font-semibold">Pending Approvals</h3>
+		{approvals.length === 0 && <p>No pending requests</p>}
+		{approvals.map(l => (
+		  <div key={l.id} className="border p-3 my-2 rounded">
+			<p><strong>{l.user.profile?.firstName} {l.user.profile?.lastName}</strong> — {l.type}</p>
+			<p>{new Date(l.startDate).toLocaleDateString()} to {new Date(l.endDate).toLocaleDateString()}</p>
+			<p>Reason: {l.reason}</p>
+			<div className="mt-2">
+			  <button onClick={() => handleDecision(l.id, true)} className="px-3 py-1 bg-green-600 text-white rounded mr-2">Approve</button>
+			  <button onClick={() => handleDecision(l.id, false)} className="px-3 py-1 bg-red-600 text-white rounded">Reject</button>
+			</div>
+		  </div>
+		))}
+		{message && <div className="mt-2 text-sm text-blue-700">{message}</div>}
+	  </div>
+	</div>
+  );
+}

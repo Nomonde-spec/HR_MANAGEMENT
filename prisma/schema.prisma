@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  role         String   @default("EMPLOYEE")
+  employeeId   String?  @unique
+  isFirstLogin Boolean  @default(true)
+  refreshToken String?
+
+  profile         EmployeeProfile?
+  attendance      Attendance[]
+  leaveRequests   LeaveRequest[]
+  passwordResets  PasswordReset[]
+  createdAt       DateTime @default(now())
+}
+
+model EmployeeProfile {
+  id            String  @id @default(uuid())
+  user          User    @relation(fields: [userId], references: [id])
+  userId        String  @unique
+  firstName     String
+  lastName      String
+  phone         String?
+  address       String?
+  emergencyContact String?
+  department    String?
+  designation   String?
+  dateOfJoining DateTime?
+  profilePicture String?
+  documents     String?  @default("{}")
+  leaveBalance  String   @default("{}")
+}
+
+model Attendance {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  date      DateTime @default(now())
+  checkIn   DateTime?
+  checkOut  DateTime?
+  ipAddress String?
+}
+
+model LeaveRequest {
+  id        String     @id @default(uuid())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  type      String
+  startDate DateTime
+  endDate   DateTime
+  reason    String
+  status    String      @default("PENDING")
+  hrComment String?
+  createdAt DateTime    @default(now())
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model JobApplicant {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  phone     String?
+  applications JobApplication[]
+  createdAt DateTime @default(now())
+}
+
+model JobApplication {
+  id         String   @id @default(uuid())
+  applicant  JobApplicant @relation(fields: [applicantId], references: [id])
+  applicantId String
+  job        Job      @relation(fields: [jobId], references: [id])
+  jobId      String
+  name       String
+  email      String
+  phone      String
+  message    String?
+  status     String   @default("APPLIED")
+  createdAt  DateTime @default(now())
+}
+
+model Job {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  department  String
+  location    String?
+  salary      String?
+  datePosted  DateTime @default(now())
+  closingDate DateTime
+  requirements String?  @default("[]")
+  applications JobApplication[]
+  createdAt   DateTime @default(now())
+}
