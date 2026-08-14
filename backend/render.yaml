@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: hr-management-backend
+    env: node
+    plan: free
+    buildCommand: npm install && npx prisma migrate deploy && npx prisma generate
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: JWT_SECRET
+        description: JWT secret key for authentication
+        sync: false
+      - key: FRONTEND_URL
+        description: Frontend URL for CORS
+        value: https://your-frontend.vercel.app
+    
+databases:
+  - name: hr-management-db
+    plan: free
+    ipWhitelist: []

@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "buildCommand": "npm install && npx prisma generate && npx prisma migrate deploy",
+  "devCommand": "npm run dev",
+  "functions": {
+    "api/**": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "env": {
+    "DATABASE_URL": {
+      "description": "Database connection string",
+      "example": "file:./dev.db"
+    },
+    "JWT_SECRET": {
+      "description": "JWT secret key",
+      "required": true
+    },
+    "NODE_ENV": {
+      "default": "production"
+    },
+    "FRONTEND_URL": {
+      "description": "Frontend URL for CORS",
+      "example": "https://your-frontend.vercel.app"
+    }
+  }
+}

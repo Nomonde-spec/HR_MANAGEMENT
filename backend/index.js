@@ -17,15 +17,53 @@ app.use('/api/employee', employeeRoutes);
 app.use('/api/hr', hrRoutes);
 app.use('/api/applicant', applicantRoutes);
 
-// health
-app.get('/api/health', (req, res) => res.json({ success: true, message: 'ok' }));
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Server is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
 
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ success: false, message: 'Internal Server Error' });
+  console.error('\n=== ERROR ===');
+  console.error('Path:', req.path);
+  console.error('Method:', req.method);
+  console.error('Message:', err.message);
+  console.error('Stack:', err.stack);
+  console.error('===============\n');
+  
+  res.status(500).json({ 
+    success: false, 
+    message: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message,
+    timestamp: new Date().toISOString()
+  });
 });
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`Server listening on ${port}`);
+const server = app.listen(port, () => {
+  console.log(`✓ Server listening on port ${port}`);
+  console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(async () => {
+    console.log('HTTP server closed');
+    await prisma.$disconnect();
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', async () => {
+  console.log('SIGINT signal received: closing HTTP server');
+  server.close(async () => {
+    console.log('HTTP server closed');
+    await prisma.$disconnect();
+    process.exit(0);
+  });
 });

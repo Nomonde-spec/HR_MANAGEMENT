@@ -1,0 +1,13 @@
+{
+  "buildCommand": "npm install && npx prisma generate && npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "react",
+  "outputDirectory": "dist",
+  "env": {
+    "VITE_API_BASE": {
+      "description": "Backend API URL",
+      "example": "https://your-backend.com/api"
+    }
+  }
+}
