@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore, { useThemeStore } from '../store/authStore';
-import { getApprovals, approveLeave, getDepartmentSummary, getEmployeeDirectory, updateEmployeeByHr } from '../api/api';
+import { API_BASE, getApprovals, approveLeave, getDepartmentSummary, getEmployeeDirectory, updateEmployeeByHr } from '../api/api';
 
 export default function HRDashboard() {
   const { accessToken, logout, user } = useAuthStore();
@@ -18,7 +18,7 @@ export default function HRDashboard() {
     try {
       const [approvalsRes, statsRes, deptRes, employeesRes] = await Promise.all([
         getApprovals(accessToken),
-        fetch('/api/hr/stats', { headers: { Authorization: `Bearer ${accessToken}` } }).then(r => r.json()),
+        fetch(`${API_BASE}/hr/stats`, { headers: { Authorization: `Bearer ${accessToken}` } }).then(r => r.json()),
         getDepartmentSummary(accessToken),
         getEmployeeDirectory(accessToken)
       ]);

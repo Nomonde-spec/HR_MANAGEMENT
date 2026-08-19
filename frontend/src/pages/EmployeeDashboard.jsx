@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore, { useThemeStore } from '../store/authStore';
-import { getProfile, clock as apiClock, updateProfile, requestLeave, getLeaveRequests, getLeaveSummary } from '../api/api';
+import { API_BASE, getProfile, clock as apiClock, updateProfile, requestLeave, getLeaveRequests, getLeaveSummary } from '../api/api';
 
 const leaveTypeOptions = ['SICK', 'CASUAL', 'ANNUAL', 'UNPAID'];
 
@@ -93,7 +93,7 @@ export default function EmployeeDashboard() {
 
     try {
       const fileInfos = files.map(f => ({ name: f.name, type: f.type }));
-      const presignRes = await fetch('/api/employee/presign', {
+      const presignRes = await fetch(`${API_BASE}/employee/presign`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ files: fileInfos }),
@@ -108,7 +108,7 @@ export default function EmployeeDashboard() {
         await fetch(p.uploadUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
       }
 
-      const registerRes = await fetch('/api/employee/register-file', {
+      const registerRes = await fetch(`${API_BASE}/employee/register-file`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ files: presigned.map(p => ({ name: p.name, key: p.key, url: p.url })) }),

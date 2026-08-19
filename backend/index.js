@@ -17,6 +17,14 @@ app.use('/api/employee', employeeRoutes);
 app.use('/api/hr', hrRoutes);
 app.use('/api/applicant', applicantRoutes);
 
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'HR Management API is running',
+    healthCheck: '/api/health'
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ 
@@ -43,9 +51,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-const port = process.env.PORT || 4000;
-const server = app.listen(port, () => {
-  console.log(`✓ Server listening on port ${port}`);
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✓ Server listening on port ${PORT}`);
   console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 

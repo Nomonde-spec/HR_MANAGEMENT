@@ -4,7 +4,8 @@ services:
     env: node
     plan: free
     buildCommand: npm install && npx prisma migrate deploy && npx prisma generate
-    startCommand: node index.js
+    startCommand: npm start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
@@ -16,8 +17,3 @@ services:
       - key: FRONTEND_URL
         description: Frontend URL for CORS
         value: https://your-frontend.vercel.app
-    
-databases:
-  - name: hr-management-db
-    plan: free
-    ipWhitelist: []

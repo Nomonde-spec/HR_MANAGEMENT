@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate, Link } from 'react
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import HRDashboard from './pages/HRDashboard';
 import JobSeekers from './pages/JobSeekers';
+import { API_BASE } from './api/api';
 import ProtectedRoute from './components/ProtectedRoute';
 import ApplicantProtectedRoute from './components/ApplicantProtectedRoute';
 import useAuthStore, { useThemeStore } from './store/authStore';
@@ -58,7 +59,7 @@ function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -122,7 +123,7 @@ function ApplicantLogin() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const res = await fetch('/api/applicant/login', {
+      const res = await fetch(`${API_BASE}/applicant/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -187,7 +188,7 @@ function ApplicantRegister() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const res = await fetch('/api/applicant/register', {
+      const res = await fetch(`${API_BASE}/applicant/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -262,7 +263,7 @@ function SignUp() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const res = await fetch('/api/auth/signup', {
+      const res = await fetch(`${API_BASE}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
